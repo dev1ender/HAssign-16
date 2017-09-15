@@ -1,0 +1,16 @@
+
+--create table emp_data with fields
+CREATE TABLE emp_data(Id int,Name String ,Salary int,Unit String) ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t';
+
+--load data into the table emp-data
+LOAD DATA LOACL INPATH '/home/acadgild/' INTO TABLE emp_data;
+
+--show the data
+SELECT * FROM emp_data;
+
+
+--Task 1
+SELECT Id, Name,Unit,Salary,NebhName,NebhSalary FROM(SELECT Id,Name,Unit,Salary,LEAD(Name,1) OVER (PARTITION BY Unit ORDER BY Salary ASC) AS NebhName,LEAD (Salary,1) OVER (PARTITION BY Unit ORDER BY Salary ASC ) AS NebhSalary FROM emp_data) temp WHERE Salary<100;
+
+--Task2
+SELECT Id,Name,Unit,Salary,AvgSalary FROM(SELECT Id,Name,Unit,Salary ,AVG(Salary) OVER (PARTITION BY Unit) AS AvgSalary FROM emp_data) temp WHERE Salary>AvgSalary;
